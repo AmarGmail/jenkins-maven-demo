@@ -4,8 +4,8 @@ pipeline {
     parameters {
         string(
             name: 'BRANCH_NAME',
-            defaultValue: 'main'
-            description: 'Github branch to buuld'
+            defaultValue: 'main',
+            description: 'Github branch to build'
         )
 
         booleanParam(
@@ -18,7 +18,7 @@ pipeline {
 
         choice(
             name: 'BUILD_ENV',
-            choices: ['dev', 'qa', 'prod']
+            choices: ['dev', 'qa', 'prod'],
             description: 'Target Environment'
         )
     }
