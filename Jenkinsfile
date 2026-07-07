@@ -50,13 +50,12 @@ pipeline {
         stage('Git Info') {
             steps {
                 echo "==============GIT INFO=================="
-                echo "Commit : ${env.GIT_COMMIT}"
                 echo "Branch : ${env.GIT_BRANCH}"
                 echo "Job    : ${env.JOB_NAME}"
                 echo "Build  : ${env.BUILD_NUMBER}"
                 echo "Commit = ${env.GIT_COMMIT}"
                 echo "Build URL = ${env.BUILD_URL}"
-                echp "-----------------------------------------"
+                echo "-----------------------------------------"
             }
         }
 
