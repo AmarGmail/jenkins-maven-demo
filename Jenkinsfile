@@ -22,6 +22,21 @@ pipeline {
     }
 
     stages {
+        stage('Initilize.....'){
+            steps {
+                echo "============Build Parameters==========="
+                echo "Build Number : ${env.BUILD_NUMBER}"
+                echo "Job Name     : ${env.JOB_NAME}"
+                echo "Build ID     :${env.BUILD_ID}"
+                echo "Workspace    : ${env.WORKSPACE}"
+                echo "Build URL    : ${env.BUILD_URL}"
+                echo "Branch      : ${params.BRANCH_NAME}"
+                echo "Environment : ${params.BUILD_ENV}"
+                echo "Run Tests   : ${params.RUN_TESTS}"
+                echo "----------------------------------------"
+            }
+        }
+
         stage('Checkout'){
             steps {
                 echo "Getting the code from github..."
