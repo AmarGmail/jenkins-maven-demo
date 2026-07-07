@@ -9,11 +9,9 @@ pipeline {
         )
 
         booleanParam(
-            string(
-                name: 'RUN_TESTs',
+                name: 'RUN_TESTS',
                 defaultValue: true,
                 description: "Run Junit tests"
-            )
         )
 
         choice(
@@ -24,7 +22,7 @@ pipeline {
     }
 
     stages {
-        stage('checkout'){
+        stage('Checkout'){
             steps {
                 echo "Getting the code from github..."
                 echo "Branch: ${params.BRANCH_NAME}"
@@ -37,7 +35,7 @@ pipeline {
         stage('Test'){
             when {
                 expression {
-                    params.RUN_TESTs
+                    params.RUN_TESTS
                 }
             }
 
@@ -46,7 +44,7 @@ pipeline {
             }
         }
         
-        stage('package'){
+        stage('Package'){
             steps {
                 sh 'mvn package'
             }
