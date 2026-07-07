@@ -1,0 +1,48 @@
+pipeline {
+    agent any
+
+    stages {
+        //stage('checkout code'){
+        //    steps {
+        //        echo "Getting the code from github"
+        //        checkout scm
+        //    }
+        //}
+        stage('checkout'){
+            steps {
+                echo "Getting the code from github..."
+                checkout scm
+                
+            }
+        }
+        
+        stage('Run Test'){
+            steps {
+                echo "Running Test..."
+                sh 'mvn test'
+            }
+        }
+
+        stage('Build jars...'){
+            steps{
+                echo "Building JAR file"
+                sh 'mvn package'
+            }
+        }
+
+        stage('Archive Jar'){
+            steps{
+                echo "Saving jar for future"
+                archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+            }
+        }
+    }
+    post {
+        success{
+            echo "Build Completed successfully"
+        }
+        failure {
+            echo "Build failed"
+        }
+    }
+}
