@@ -47,6 +47,15 @@ pipeline {
             }
         }
 
+        stage('Git Info') {
+            steps {
+                echo "Commit : ${env.GIT_COMMIT}"
+                echo "Branch : ${env.GIT_BRANCH}"
+                echo "Job    : ${env.JOB_NAME}"
+                echo "Build  : ${env.BUILD_NUMBER}"
+            }
+        }
+
         stage('Test'){
             when {
                 expression {
