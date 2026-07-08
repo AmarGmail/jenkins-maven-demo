@@ -1,11 +1,11 @@
 import groovy.json.JsonOutput
 
-def updateGitHubStatus(string state, string description){
+def updateGitHubStatus(String state, String description){
 
     def payload = JsonOutput.toJson([
         state       : state,
-        context     : "jenkins CI",
-        decription  : description,
+        context     : "Jenkins CI",
+        description : description,
         target_url  : env.BUILD_URL
 
     ])
@@ -15,8 +15,9 @@ def updateGitHubStatus(string state, string description){
     ])  {
         sh """
             curl --fail --silent --show-error \
+            --location \
             -X POST \
-            -H "Accept: application/vnd.github=json" \
+            -H "Accept: application/vnd.github+json" \
             -H "Authorization: Bearer \$GITHUB_TOKEN" \
             https://api.github.com/repos/AmarGmail/jenkins-maven-demo/statuses/${env.GIT_COMMIT} \
             -d '${payload}'
@@ -119,10 +120,10 @@ pipeline {
     post {
         success{
             script {
-                updateGitHubStatus{
+                updateGitHubStatus(
                     "success",
                     "Build Passed"
-                }
+                )
             }
             echo "Build Completed successfully"
         }
