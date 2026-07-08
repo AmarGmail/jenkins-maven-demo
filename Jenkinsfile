@@ -1,3 +1,29 @@
+import groovy.json.JsonOutput
+
+def updateGitHubStatus(string state, string description){
+
+    def payload = JsonOutput.toJson([
+        state       : state,
+        context     : "jenkins CI",
+        decription  : description,
+        target_url  : env.BUILD_URL
+
+    ])
+
+    withCredentials([
+        string(credentialsId: 'github-pat-build', variable: 'GITHUB_TOKEN')
+    ])  {
+        sh """
+            curl --fail --silent --show-error \
+            -X POST \
+            -H "Accept: application/vnd.github=json" \
+            -H "Authorization: Bearer \$GITHUB_TOKEN" \
+            https://api.github.com/repos/AmarGmail/jenkins-maven-demo/statuses/${env.GIT_COMMIT} \
+            -d '${payload}'
+        """
+    }
+}
+
 pipeline {
     agent any
 
@@ -44,6 +70,12 @@ pipeline {
                 git branch: params.BRANCH_NAME, 
                     url: 'https://github.com/AmarGmail/jenkins-maven-demo.git'
 
+                script {
+                    updateGitHubStatus(
+                        "pending",
+                        "Build Started..."
+                    )
+                }
             }
         }
 
@@ -86,9 +118,21 @@ pipeline {
 
     post {
         success{
+            script {
+                updateGitHubStatus{
+                    "Success",
+                    "Build Passed"
+                }
+            }
             echo "Build Completed successfully"
         }
         failure {
+            script {
+                updateGitHubStatus(
+                    "faiure",
+                    "Build failed"
+                )
+            }
             echo "Build failed"
         }
     }
