@@ -120,7 +120,7 @@ pipeline {
         success{
             script {
                 updateGitHubStatus{
-                    "Success",
+                    "success",
                     "Build Passed"
                 }
             }
@@ -129,7 +129,7 @@ pipeline {
         failure {
             script {
                 updateGitHubStatus(
-                    "faiure",
+                    "failure",
                     "Build failed"
                 )
             }
