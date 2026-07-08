@@ -25,16 +25,6 @@ def updateGitHubStatus(String state, String description){
     }
 }
 
-@NonCPS
-def parseOwnerRepo(String gitUrl) {
-    def matcher = (gitUrl =~ /github\.com[:\/]([^\/]+)\/([^\/]+?)(\.git)?$/)
-    if (!matcher.find()) {
-        error("Unable to parse owner/repo from GitHub repository URL: ${gitUrl}")
-    }
-    // Return plain, serializable Strings — the Matcher itself never leaves this method
-    return [matcher.group(1), matcher.group(2)]
-}
-
 pipeline {
     agent any
 
@@ -83,22 +73,33 @@ pipeline {
             steps {
                 echo "Getting the code from github..."
                 echo "Branch: ${params.BRANCH_NAME}"
-                git branch: params.BRANCH_NAME,
+                git branch: params.BRANCH_NAME, 
+                    //url: 'https://github.com/AmarGmail/jenkins-maven-demo.git'
                     url: params.REPOSITORY_URL // Use the parameter for repository URL
 
                 script {
-                    def gitUrl = params.REPOSITORY_URL
+                        //Read GIT URL
+                        //def gitUrl = sh(
+                        //    script: "git config --get remote.origin.url",
+                        //    returnStdout: true
+                        //).trim()
+                        def gitUrl = params.REPOSITORY_URL // Use the parameter for repository URL
+                        //print GIT URL
+                        echo "GIT URL = ${gitUrl}"
 
-                    // Regex matching happens entirely inside the @NonCPS method —
-                    // only plain Strings come back here, so nothing unserializable
-                    // stays in scope when updateGitHubStatus()'s sh step runs.
-                    def (owner, repo) = parseOwnerRepo(gitUrl)
-                    env.GITHUB_OWNER = owner
-                    env.GITHUB_REPO  = repo
+                        //PARSE GIT URL to get owner and repo name
+                        // Strip optional .git suffix and pull out owner/repo
+                        //def matcher = gitUrl =~ /github\.com[:/]([^\/]+)\/([^\/]+?)(\.git)?$/
+                        def matcher = gitUrl =~ /github\.com[:\/]([^\/]+)\/([^\/]+?)(\.git)?$/
+                        // validate if the regex matched
+                        if (!matcher) {
+                            error("Unable to parse owner/repo from GitHub repository URL: ${gitUrl}")
+                        }
+                        env.GITHUB_OWNER = matcher[0][1]
+                        env.GITHUB_REPO = matcher[0][2]
 
-                    echo "GIT URL      : ${gitUrl}"
-                    echo "GitHub Owner : ${env.GITHUB_OWNER}"
-                    echo "Repository   : ${env.GITHUB_REPO}"
+                        echo "GitHub Owner : ${env.GITHUB_OWNER}"
+                        echo "Repository   : ${env.GITHUB_REPO}"
 
                     updateGitHubStatus(
                         "pending",
