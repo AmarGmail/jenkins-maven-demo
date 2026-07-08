@@ -90,7 +90,7 @@ pipeline {
                         //PARSE GIT URL to get owner and repo name
                         // Strip optional .git suffix and pull out owner/repo
                         //def matcher = gitUrl =~ /github\.com[:/]([^\/]+)\/([^\/]+?)(\.git)?$/
-                        def matcher = gitUrl =~ /github\.com[:/]([^\/]+)\/([^\/]+?)(\.git)?$/
+                        def matcher = gitUrl =~ /github\.com[:\/]([^\/]+)\/([^\/]+?)(\.git)?$/
                         // validate if the regex matched
                         if (!matcher) {
                             error("Unable to parse owner/repo from GitHub repository URL: ${gitUrl}")
