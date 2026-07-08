@@ -108,7 +108,7 @@ pipeline {
             }
         }
 
-        stage('Git Info') {
+        stage('Git and Build Info') {
             steps {
                 echo "==============GIT INFO=================="
                 echo "Branch        : ${env.GIT_BRANCH}"
@@ -119,27 +119,22 @@ pipeline {
                 echo "Owner         : ${env.GITHUB_OWNER}"
                 echo "Repository    : ${env.GITHUB_REPO}"
                 echo "-----------------------------------------"
-            }
-        }
-
-        stage('Build Info') {
-            steps {
                 echo "==============BUILD INFO================"
-                echo "Build Number : ${env.BUILD_NUMBER}"
-                echo "Job Name     : ${env.JOB_NAME}"
-                echo "Build ID     :${env.BUILD_ID}"
-                echo "Workspace    : ${env.WORKSPACE}"
-                echo "Build URL    : ${env.BUILD_URL}"
-                echo "Branch       : ${params.BRANCH_NAME}"
-                echo "Environment  : ${params.BUILD_ENV}"
-                echo "Run Tests    : ${params.RUN_TESTS}"
+                echo "Build Number  : ${env.BUILD_NUMBER}"
+                echo "Job Name      : ${env.JOB_NAME}"
+                echo "Build ID      :${env.BUILD_ID}"
+                echo "Workspace     : ${env.WORKSPACE}"
+                echo "Build URL     : ${env.BUILD_URL}"
+                echo "Branch        : ${params.BRANCH_NAME}"
+                echo "Environment   : ${params.BUILD_ENV}"
+                echo "Run Tests     : ${params.RUN_TESTS}"
                 sh 'java -version'
                 sh 'mvn -version'
                 sh 'git --version'
                 echo "----------------------------------------"
-            }   
+            }
         }
-
+        
         stage('Test'){
             when {
                 expression {
@@ -148,13 +143,13 @@ pipeline {
             }
 
             steps {
-                sh 'mvn test'
+                sh 'mvn clean test'
             }
         }
         
         stage('Package'){
             steps {
-                sh 'mvn package'
+                sh 'mvn package  -DskipTests'
             }
         }
 
