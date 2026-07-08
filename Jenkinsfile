@@ -179,7 +179,7 @@ pipeline {
             script {
                 updateGitHubStatus(
                     "success",
-                    "Build Passed"
+                    "Build #${env.BUILD_NUMBER} Passed"
                 )
             }
             echo "Build Completed successfully"
@@ -188,7 +188,7 @@ pipeline {
             script {
                 updateGitHubStatus(
                     "failure",
-                    "Build failed"
+                    "Build #${env.BUILD_NUMBER} failed"
                 )
             }
             echo "Build failed"
